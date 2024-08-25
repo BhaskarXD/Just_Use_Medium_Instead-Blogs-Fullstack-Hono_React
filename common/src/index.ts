@@ -6,7 +6,7 @@ export const signupInput = z.object({
     name: z.string().optional()
 })
 
-export type singupInput = z.infer<typeof signupInput>
+export type signupInput = z.infer<typeof signupInput>
 
 export const signinInput = z.object({
     email: z.string().email(),
