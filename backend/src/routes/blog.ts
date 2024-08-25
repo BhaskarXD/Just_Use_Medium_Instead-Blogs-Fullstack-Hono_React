@@ -1,14 +1,16 @@
 import {Hono} from "hono";
-import {jwt} from "hono/jwt";
+import {jwt, JwtVariables, verify} from "hono/jwt";
 import {getPrisma} from "../utils/prisma_utils";
-import {createBlogInput, updateBlogInput } from "@bhaskar_xd/medium-common";
-import {update} from "hono/dist/types/jsx/dom/render";
+import {createBlogInput, updateBlogInput} from "@bhaskar_xd/medium-common";
+
+type Variables = JwtVariables
 
 const blog = new Hono<{
-    Bindings:{
+    Bindings: {
         DATABASE_URL: string,
-        JWT_SECRET: string
-    }
+        JWT_SECRET: string,
+    },
+    Variables: Variables,
 }>()
 
 blog.use('/*', (c, next) => {
@@ -18,15 +20,31 @@ blog.use('/*', (c, next) => {
     return jwtMiddleware(c, next)
 })
 
-
 // TODO: add pagination
 blog.get('/bulk', async (c) => {
     const prims = getPrisma(c.env.DATABASE_URL);
-    try{
-        const posts = await prims.post.findMany();
+    try {
+        const posts = await prims.post.findMany({
+            select: {
+                id: true,
+                title: true,
+                content: true,
+                createdAt: true,
+                author: {
+                    select: {
+                        name: true,
+                    }
+                }
+            },
+            orderBy: [
+                {
+                    createdAt: 'desc',
+                },
+            ],
+        });
         return c.json({'posts': posts})
 
-    }catch (e){
+    } catch (e) {
         c.status(411)
         return c.json({message: e instanceof Error ? `Caught an error: ${e.message}` : "Caught an unknown error"})
     }
@@ -36,18 +54,29 @@ blog.get('/:id', async (c) => {
     const prisma = getPrisma(c.env.DATABASE_URL)
     const id = c.req.param('id')
 
-    try{
+    try {
         const post = await prisma.post.findFirst({
-            where:{
+            where: {
                 id: id
+            },
+            select: {
+                id: true,
+                title: true,
+                content: true,
+                createdAt: true,
+                author: {
+                    select: {
+                        name: true,
+                    }
+                }
             }
         })
-        if(!post){
+        if (!post) {
             c.status(404)
             return c.json({'message': "Post doesn't exits"})
         }
-        return c.json({id: post.id})
-    }catch (e){
+        return c.json({post: post})
+    } catch (e) {
         c.status(411)
         return c.json({message: e instanceof Error ? `Caught an error: ${e.message}` : "Caught an unknown error"})
     }
@@ -56,14 +85,14 @@ blog.get('/:id', async (c) => {
 blog.post('/', async (c) => {
     const prisma = getPrisma(c.env.DATABASE_URL)
     const body = await c.req.json()
-    const { success, error } = createBlogInput.safeParse(body);
-    if(!success){
+    const {success, error} = createBlogInput.safeParse(body);
+    if (!success) {
         c.status(411);
         return c.json({'message': error})
     }
-    const payload = c.get('jwtPayload')
+    const payload = c.get("jwtPayload")
 
-    try{
+    try {
         const post = await prisma.post.create({
             data: {
                 title: body.title,
@@ -72,7 +101,7 @@ blog.post('/', async (c) => {
             }
         })
         return c.json({id: post.id, post: post})
-    }catch (e){
+    } catch (e) {
         c.status(411)
         return c.json({message: e instanceof Error ? `Caught an error: ${e.message}` : "Caught an unknown error"})
     }
@@ -81,15 +110,15 @@ blog.post('/', async (c) => {
 blog.put('/', async (c) => {
     const prisma = getPrisma(c.env.DATABASE_URL)
     const body = await c.req.json()
-    const { success, error } = updateBlogInput.safeParse(body)
-    if(!success){
+    const {success, error} = updateBlogInput.safeParse(body)
+    if (!success) {
         c.status(411);
         return c.json({'message': error});
     }
 
-    try{
+    try {
         const post = await prisma.post.update({
-            where:{
+            where: {
                 id: body.id
             },
             data: {
@@ -98,7 +127,7 @@ blog.put('/', async (c) => {
             }
         })
         return c.json({id: post.id})
-    }catch (e){
+    } catch (e) {
         c.status(411)
         return c.json({message: e instanceof Error ? `Caught an error: ${e.message}` : "Caught an unknown error"})
     }

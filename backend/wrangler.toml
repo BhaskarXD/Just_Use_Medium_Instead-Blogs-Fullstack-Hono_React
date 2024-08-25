@@ -5,8 +5,8 @@ compatibility_date = "2023-12-01"
 # MY_VAR = "my-variable"
 
 [vars]
-DATABASE_URL="ohh_sneaky_peaky_like"
-JWT_SECRET="ohh_sneaky_peaky_like"
+DATABASE_URL="ohh_sneaky_peaky_like_(i know what u trying to do bruh, this is not the secret)"
+JWT_SECRET="ohh_sneaky_peaky_like_(i know what u trying to do bruh, this is not the secret)"
 
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"

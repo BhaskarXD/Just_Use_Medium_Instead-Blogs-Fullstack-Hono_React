@@ -27,17 +27,17 @@ auth.post('/signup', async (c) => {
                 name: body.name
             }
         })
-        console.log("user : ", user)
+        // console.log("user : ", user)
         const payload={id: user.id}
         const token = await sign(payload, c.env.JWT_SECRET)
-        return c.json({jwt: token, user: user});
+        return c.json({jwt: token, user: {name: user.name}});
     }catch (e){
         c.status(411)
         return c.json({message: e instanceof Error ? `Caught an error: ${e.message}` : "Caught an unknown error"})
     }
 })
 
-auth.get('/signin', async (c) => {
+auth.post('/signin', async (c) => {
     const prisma = getPrisma(c.env.DATABASE_URL)
     const body = await c.req.json()
     const { success, error, data } = signupInput.safeParse(body)
@@ -49,6 +49,10 @@ auth.get('/signin', async (c) => {
         where: {
             email: body.email,
             password: body.password
+        },
+        select: {
+            name: true,
+            id: true,
         }
     })
     if(!user){
@@ -56,8 +60,9 @@ auth.get('/signin', async (c) => {
         return c.json({error: "user not found"});
     }
     const payload={id: user.id}
+    console.log("payload : ", payload, "user : ", user)
     const jwt = await sign(payload, c.env.JWT_SECRET)
-    return c.json({jwt});
+    return c.json({jwt, user});
 })
 
 export default auth
