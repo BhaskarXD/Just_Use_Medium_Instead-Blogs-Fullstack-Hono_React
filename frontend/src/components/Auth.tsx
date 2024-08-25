@@ -9,9 +9,9 @@ import {useAuth} from "../hooks";
 export const Auth = ({type}: { type: "signup" | "signin" }) => {
     const navigate = useNavigate();
     const [authInputs, setAuthInputs] = useState<signupInput>({
+        name: "",
         email: "",
         password: "",
-        name: ""
     })
     const {setIsAuthenticated, setLoading} = useAuth();
 
@@ -44,7 +44,11 @@ export const Auth = ({type}: { type: "signup" | "signin" }) => {
 
             {/*to make its child take full width i have to do w-full on child, but i also have to do w-full on the div below so that it itself first stretches that much*/}
             <div className={"max-w-sm w-full"}>
-                {type === 'signup' && <LabelledInput label={"Username"} placeholder={"fuck me"} value={authInputs.name}
+                {/*The expression value={authInputs.name as string} is using TypeScript’s type assertion to specify that authInputs.name should be treated as a string type*/}
+                {/*Type Mismatch: If authInputs.name is of a different type (e.g., number or undefined), but you know it will be a string in this specific situation, type assertion can help bypass TypeScript errors.*/}
+                {/*Avoid Errors: When TypeScript cannot infer the type correctly and you are confident of the type, type assertion can help avoid type errors.*/}
+                {/*Be cautious with type assertions. They can bypass TypeScript's type checking and may lead to runtime errors if your assumptions are incorrect. It’s usually better to ensure that types are properly defined and handled in your code rather than relying heavily on type assertions.*/}
+                {type === 'signup' && <LabelledInput label={"Username"} placeholder={"fuck me"} value={authInputs.name as string}
                                                      onChange={(e) => setAuthInputs((p) => ({
                                                          ...p,
                                                          name: e.target.value

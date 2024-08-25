@@ -2,7 +2,6 @@ import {AppBar} from "../components/AppBar.tsx";
 import {useBlog} from "../hooks";
 import {useParams} from "react-router-dom";
 import {Avatar} from "../components/Avatar.tsx";
-import {BlogSkeleton} from "./BlogSkeleton.tsx";
 import {CenteredLoader} from "../components/CenteredLoader.tsx";
 
 export const Blog = () => {
@@ -10,19 +9,20 @@ export const Blog = () => {
     const {loading, blog} = useBlog({id: id || ""});
 
 
-    const formatDate = (dateString) => {
+    const formatDate = (dateString: string|undefined) => {
         const options = {year: "numeric", month: "long", day: "numeric"}
+        // @ts-expect-error function needs the options
         return new Date(dateString).toLocaleDateString(undefined, options)
     }
 
-    const formattedTime = (dateString) => {
-        const date = new Date(dateString);
-        return new Intl.DateTimeFormat('en-US', {
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-        }).format(date);
-    }
+    // const formattedTime = (dateString) => {
+    //     const date = new Date(dateString);
+    //     return new Intl.DateTimeFormat('en-US', {
+    //         hour: 'numeric',
+    //         minute: 'numeric',
+    //         second: 'numeric',
+    //     }).format(date);
+    // }
 
     return (
         <>

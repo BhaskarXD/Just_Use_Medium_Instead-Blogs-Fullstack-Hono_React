@@ -36,7 +36,7 @@ export const Publish = () => {
                     {/*           className="pl-2 block py-2.5 px-0 w-full text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none ml-1"*/}
                     {/*           placeholder="Title" required/>*/}
                     {/*</div>*/}
-                    <textarea id="blog_content" rows="14" onChange={(e) => {
+                    <textarea id="blog_content" rows={14} onChange={(e) => {
                         setDescription(e.target.value)
                     }}
                               className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"

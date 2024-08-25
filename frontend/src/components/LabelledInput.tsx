@@ -4,20 +4,21 @@ interface LabelledInputPropsType {
     label: string;
     placeholder: string;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-    type?: string
+    type?: string;
+    value: string
 }
 
-export const LabelledInput = ({label, placeholder, onChange, type}: LabelledInputPropsType) => {
+export const LabelledInput = ({label, placeholder, onChange, type, value}: LabelledInputPropsType) => {
     const [passwordVisible, setPasswordVisible] = useState(false)
 
     return (
         <div className={"pt-3"}>
             <label className="block mb-2 text-sm font-medium text-gray-900">{label}</label>
             <div className={"relative"}>
-                <input onChange={onChange} type={type === 'password' ? passwordVisible ? 'text' : type : type || 'text'}
+                <input onChange={onChange} type={type === 'password' ? passwordVisible ? 'text' : type : type || 'text'} value={value}
                        name={label} id={label}
                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                       placeholder={placeholder} required=""/>
+                       placeholder={placeholder}/>
                 {type === 'password' && <button className={"absolute right-4 top-0 bottom-0"}
                                                 onClick={() => setPasswordVisible((prevState) => !prevState)}>
                     {passwordVisible ?
