@@ -1,3 +1,11 @@
+## Deployed Application
+
+You can access the deployed version of the application at the following URL:
+
+[i.dont.have.a.domain.but.deployed.on.vercel.com](https://just-use-medium-instead-blogs-fullstack-hono-react-6q08sz4hr.vercel.app/blogs)
+
+Feel free to explore and enjoy the app!
+
 # Medium Clone
 
 A fullstack Medium-like application built with modern web technologies.
